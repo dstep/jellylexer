@@ -1,0 +1,193 @@
+[fragments]
+
+digit          [0-9]
+non-zero-digit [1-9]
+l-letter       [a-z]
+U-letter       [A-Z]
+letter         [a-zA-Z]
+space          [ \n\r\t]
+whitespace     [ \t]
+newline        [\n]|[\r\n]|[\r]
+id-start-char  <letter> | _
+id-char        <letter> | <digit> | _
+integer        0 | <non-zero-digit> <digit>*
+hex-digit      [0-9a-fA-F]
+
+string-prefix  L|u8|u|U
+
+[general]
+
+[codegen]
+
+header
+	/*
+	This code goes into the header file
+	*/
+
+source
+	/*
+	This code goes into the source file
+	*/
+
+[grammar]
+
+k_alignas alignas
+k_alignof alignof
+k_and and
+k_and_eq and_eq
+k_asm asm
+k_atomic_cancel atomic_cancel
+k_atomic_commit atomic_commit
+k_atomic_noexcept atomic_noexcept
+k_auto auto
+k_bitand bitand
+k_bitor bitor
+k_bool bool
+k_break break
+k_case case
+k_catch catch
+k_char char
+k_char16_t char16_t
+k_char32_t char32_t
+k_class class
+k_compl compl
+k_concept concept
+k_const const
+k_constexpr constexpr
+k_const_cast const_cast
+k_continue continue
+k_co_await co_await
+k_co_return co_return
+k_co_yield co_yield
+k_decltype decltype
+k_default default
+k_delete delete
+k_do do
+k_double double
+k_dynamic_cast dynamic_cast
+k_else else
+k_enum enum
+k_explicit explicit
+k_export export
+k_extern extern
+k_false false
+k_float float
+k_for for
+k_friend friend
+k_goto goto
+k_if if
+k_import import
+k_inline inline
+k_int int
+k_long long
+k_module module
+k_mutable mutable
+k_namespace namespace
+k_new new
+k_noexcept noexcept
+k_not not
+k_not_eq not_eq
+k_nullptr nullptr
+k_operator operator
+k_or or
+k_or_eq or_eq
+k_private private
+k_protected protected
+k_public public
+k_register register
+k_reinterpret_cast reinterpret_cast
+k_requires requires
+k_return return
+k_short short
+k_signed signed
+k_sizeof sizeof
+k_static static
+k_static_assert static_assert
+k_static_cast static_cast
+k_struct struct
+k_switch switch
+k_synchronized synchronized
+k_template template
+k_this this
+k_thread_local thread_local
+k_throw throw
+k_true true
+k_try try
+k_typedef typedef
+k_typeid typeid
+k_typename typename
+k_union union
+k_unsigned unsigned
+k_using using
+k_virtual virtual
+k_void void
+k_volatile volatile
+k_wchar_t wchar_t
+k_while while
+k_xor xor
+k_xor_eq xor_eq
+
+identifier     <id-start-char> <id-char>*
+
+decimal        <integer>
+float          <integer> [.] <digit>+ ([eE][+\-]?[0-9]+)?
+hex            0x <hex-digit>+
+bin            0b [01]+
+
+open_paren     "("
+close_paren    ")"
+open_bracket   "["
+close_bracket  "]"
+open_brace     "{"
+close_brace    "}"
+
+space          (" "|\r\n|\n|\r|\t)+
+
+comment        "//" [^\n\r]+ <newline>?
+ml_comment     "/*" ([^*]|[*]*[^/*])* [*]* "*/"
+
+string         <string-prefix> \" ( \\[nrt0\\"] | \\x <hex-digit>{2} | [^"\\] )* \"
+char           \' ( \\[nrt0\\"] | \\x <hex-digit>{2} | [^"\\] ) \'
+
+op_hash        "#"
+
+op_assign      "="
+op_add_eq      "+="
+op_sub_eq      "-="
+op_mul_eq      "*="
+op_div_eq      "/="
+op_mod_eq      "%="
+op_and_eq     "&="
+op_or_eq      "|="
+op_xor_eq      "^="
+op_shl_eq      "<<="
+op_shr_eq      ">>="
+
+op_incr        "++"
+op_decr        "--"
+
+op_add         "+"
+op_sub         "-"
+op_mul         "*"
+op_div         "/"
+op_mod         "%"
+op_tild        "~"
+op_and         "&"
+op_or          "|"
+op_xor         "^"
+op_shl         "<<"
+op_shr         ">>"
+
+op_eq          "=="
+op_ne          "!="
+op_lt          "<"
+op_gt          ">"
+op_le          "<="
+op_ge          ">="
+
+op_arrow       "->"
+op_period      "."
+op_comma       ","
+op_colon       ":"
+op_semi        ";"
+op_question    "?"
