@@ -2,6 +2,10 @@ $(source)
 
 namespace $(prefix){
 
+#if !defined(TOKEN)
+#error Define TOKEN(X) to produce an expression evaluated to the value of X token (must be a compile time constant)
+#endif
+
 // Equivalence class for each input byte value.
 // Lexer does not distinguish most of the input characters, like '4' and '5'
 // Generator puts such characters into the same class to compress transition tables.
@@ -27,15 +31,6 @@ $(transitions)
 static const uint32_t jlex_eof_transitions[] = {
 $(eof_transitions)
 };
-
-// Raw token names for debug purposes
-static const char* jlex_token_names[] = {
-$(token_names)
-};
-
-const char* token_name( Token::ID token ){
-	return jlex_token_names[token];
-}
 
 void init      ( Lexer* jlex_lexer ){
 	jlex_lexer->offset = 0;
@@ -137,18 +132,18 @@ void finalize  ( Lexer* jlex_lexer ){
 	jlex_lexer->index = jlex_token_idx / 4;
 }
 
-Token::ID* convert_tokens_ids ( Lexer* jlex_lexer ){
-	Token::ID* output = (Token::ID*)jlex_lexer->tokens;
+TokenID* convert_tokens_ids ( Lexer* jlex_lexer ){
+	TokenID* output = (TokenID*)jlex_lexer->tokens;
 	uint32_t* input = jlex_lexer->tokens;
 
 	// Reads from, and writes to the same buffer.
 	// Converts dfa actions into token ids
 	for ( size_t i = 0; i < jlex_lexer->index; i++ ){
 		uint32_t token = input[i];
-		output[i] = (Token::ID) ((token >> 16) & 0xfffu);
+		output[i] = (TokenID) ((token >> 16) & 0xfffu);
 	}
 
-	return (Token::ID*)jlex_lexer->tokens;
+	return (TokenID*)jlex_lexer->tokens;
 }
 
 size_t get_tokens_count   ( Lexer* jlex_lexer ){

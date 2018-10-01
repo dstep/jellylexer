@@ -36,6 +36,7 @@ HexMapping = {
 	'F': 15
 }
 
+
 class RegexpParser(Parser):
 	def __init__(self):
 		super().__init__()

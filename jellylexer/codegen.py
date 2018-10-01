@@ -186,13 +186,18 @@ class Codegen:
 	def build_tables(self, grammar):
 		classes = [set(range(256))]
 
+		unique_refines = set()
+
 		def refine(partition):
+			if partition in unique_refines:
+				return
+			unique_refines.add(partition)
 			n = len(classes)
 			for idx in range(n):
 				clss = classes[idx]
 				inter = clss.intersection(partition)
 				if len(inter) == len(clss):
-					break
+					continue
 				if len(inter) == 0:
 					continue
 				clss.difference_update(inter)
@@ -206,7 +211,7 @@ class Codegen:
 						state_classes[target_state] = set()
 					state_classes[target_state].add(idx)
 				for target_state, chars in state_classes.items():
-					refine(chars)
+					refine(tuple(chars))
 
 			xstate.dfa_state.visit(state_visitor)
 
@@ -263,10 +268,12 @@ class Codegen:
 
 			if dfa_state.accepts:
 				# accept...
-				accept_value = 0x80000000 | (tokens[dfa_state.accepts.token] << 16)
+				accept_value = 0x80000000
+				accept_name = dfa_state.accepts.token.id
 			else:
 				# does not accept
 				accept_value = 0
+				accept_name = None
 
 			reset_dfa_state = state.reset_state
 			reset_state = states[reset_dfa_state]
@@ -284,7 +291,18 @@ class Codegen:
 						target_value = accept_value | states[reset_target_state].offset
 				else:
 					target_value = states[target_state].offset
+
+				if accept_name:
+					target_value = f"{hex(target_value)}|((TOKEN({accept_name}))<<16)"
+				else:
+					target_value = hex(target_value)
+
 				transitions[clss * states_num + state.index] = target_value
+
+			if accept_name:
+				accept_value = f"{hex(accept_value)}|((TOKEN({accept_name}))<<16)"
+			else:
+				accept_value = hex(accept_value)
 
 			eof_transitions[state.index] = accept_value
 
@@ -297,7 +315,7 @@ class Codegen:
 		out = []
 		for state in states_list:
 			out.append(eof_transitions[state.index])
-		self.substs["eof_transitions"] = SubstValue(",".join(map(hex, out)))
+		self.substs["eof_transitions"] = SubstValue(",".join(out))
 
 		transitions_val = SubstValue()
 		for clss, _ in enumerate(classes):
@@ -308,7 +326,7 @@ class Codegen:
 				#	items.append(0)
 				#else:
 				items.append(transitions[clss * states_num + state.index])
-			line = ', '.join(map(lambda n: hex(n), items))
+			line = ', '.join(items)
 			transitions_val.add_line(line, ",")
 
 		tokens_value = SubstValue()
@@ -380,7 +398,6 @@ class Codegen:
 				if should_reset_line:
 					self.line_num += 1
 					out.write("#line {line} {file}\n".format(line=self.line_num, file=json.dumps(filename)))
-
 
 	def find_indent(self, s):
 		indent = []

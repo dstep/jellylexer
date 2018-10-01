@@ -119,6 +119,7 @@ class MinimizeDFA:
 
 		out_state = remap_state(state)
 		log.log(2, "Total states after minimization: {states}", states=new_states_num)
+
 		return out_state
 
 

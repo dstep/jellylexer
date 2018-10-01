@@ -1,3 +1,6 @@
+from jellylexer.dfa_vis import visualize
+
+
 class State:
 	def __init__(self):
 		self.trans = [None] * 256
@@ -17,6 +20,7 @@ class State:
 				_visit(target_state)
 
 		_visit(self)
+
 
 class SCC:
 	def __init__(self):

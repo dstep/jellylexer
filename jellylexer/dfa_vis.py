@@ -1,6 +1,7 @@
 from jellylexer.dfa import *
 from graphviz import Digraph
 
+
 def visualize(state):
 	G = Digraph()
 
